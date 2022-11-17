@@ -49,13 +49,12 @@ for child in root.iter('Id'):
     #message = child.find('Id')
     #if message is not None:
     id_message = child.text
-    for id in id_message:
-        msg_stats = requests.get(f'https://api5.esv2.com/v2/Api/MessageStatistics/{id}?apiKey=XNBsZQVSnDOQfTTFnktE')
-        stats_data = msg_stats.text
-        root_data = ET.fromstring(stats_data)
-        for t in root_data.iter('Sent'):
-            sent = t.text
-            print (sent)
+    #for id in id_message:
+    msg_stats = requests.get(f'https://api5.esv2.com/v2/Api/MessageStatistics/{id_message}?apiKey=XNBsZQVSnDOQfTTFnktE')
+    stats_data = msg_stats.text
+    root_data = ET.fromstring(stats_data)
+    for t in root_data.iter():
+        print (t.text)
         #print (root_data)
         #print(root_data)
         #for c in root_data.iter():
