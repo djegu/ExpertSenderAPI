@@ -10,11 +10,11 @@ from datetime import date
 Output
 ***************************************************"""
 version = 'v1'
-folderName = r'C:\Users\15148\Documents\01 - Mediazur\API Data'
+#folderName = r'C:\Users\15148\Documents\01 - Mediazur\API Data'
 currentYear = 2022
 currentDate = date.today().strftime('%Y-%m-%d')
 reportDate = currentDate
-exportFileName = '\Export data - ' + version + ' - ' + reportDate
+#exportFileName = '\Export data - ' + version + ' - ' + reportDate
 
 
 '''***************************************************
@@ -37,35 +37,41 @@ mtd_sms = 'Api/SmsMmsMessages/'
 Test Pandas
 ***************************************************'''
 
-df_xl = pd.read_excel(r"C:\Users\15148\Documents\01 - Mediazur\API Data.xlsx")
+#df_xl = pd.read_excel(r"C:\Users\15148\Documents\01 - Mediazur\API Data.xlsx")
 
-for index, row in df_xl.iterrows():
+#for index, row in df_xl.iterrows():
     #r = requests.get(f"{row['SERVEUR']}{mtd_eml}{mtd_api}{row['CLE API']}")
-    r = requests.get('https://api5.esv2.com/v2/Api/Messages?apiKey=XNBsZQVSnDOQfTTFnktE')
-    json_data = r.text
-    #tree = ET.parse(r.text)
-    root = ET.fromstring(json_data)
-    for child in root.iter():
-        message = child.find('Id')
-        if message is not None:
-            id_message = message.text
-            msg_stats = requests.get(f'https://api5.esv2.com/v2/Api/MessageStatistics/{id_message}?apiKey=XNBsZQVSnDOQfTTFnktE')
-            each_data = ET.fromstring(msg_stats.text)
-            for c in each_data.iter():
-                sent = c.find('Sent') 
-                bounced = c.find('Bounced')
-                data = sent + bounced
-                print (data)
+r = requests.get('https://api5.esv2.com/v2/Api/Messages?apiKey=XNBsZQVSnDOQfTTFnktE')
+json_data = r.text
+#tree = ET.parse(r.text)
+root = ET.fromstring(json_data)
+for child in root.iter('Id'):
+    #message = child.find('Id')
+    #if message is not None:
+    id_message = child.text
+    for id in id_message:
+        msg_stats = requests.get(f'https://api5.esv2.com/v2/Api/MessageStatistics/{id}?apiKey=XNBsZQVSnDOQfTTFnktE')
+        stats_data = msg_stats.text
+        root_data = ET.fromstring(stats_data)
+        for t in root_data.iter('Sent'):
+            sent = t.text
+            print (sent)
+        #print (root_data)
+        #print(root_data)
+        #for c in root_data.iter():
+        #    sent = c.findall('Sent') 
+        #   bounced = c.findall('Bounced')
+
             
-    '''for elem in r.iter():
-        print (elem)
-    
-    
-    json_data = r.text
-    root = ET.fromstring(json_data)
-    textelem = root.find('Message/Id')
-    print  (textelem)
-    '''
+'''for elem in r.iter():
+     print (elem)
+ 
+ 
+ json_data = r.text
+ root = ET.fromstring(json_data)
+ textelem = root.find('Message/Id')
+ print  (textelem)
+ '''
   
     #dfxml = pd.read_xml(r.content)
     #print (dfxml)
